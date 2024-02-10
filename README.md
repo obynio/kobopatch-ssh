@@ -1,6 +1,6 @@
 # kobopatch-ssh
 
-This repository contains the tools needed to compile [dropbear](https://matt.ucc.asn.au/dropbear/dropbear.html) for the `arm-kobo-linux-gnueabihf` system (all recent [Kobo](https://www.kobo.com/) products). This binary is used for root shell access on Kobo devices which, in my case, is used to deploy and debug software on e-readers.
+This repository contains the tools needed to compile [dropbear](https://matt.ucc.asn.au/dropbear/dropbear.html) for the `arm-kobo-linux-gnueabihf` system (all recent [Kobo](https://www.kobo.com/) products). This binary is used for root shell access on Kobo devices which, in my case, is used to deploy and debug software on e-readers. As of now, this dynamically compiled dropbear has been tested on a Kobo Libra 2.
 
 ## Cloning
 
@@ -47,6 +47,12 @@ chmod +x /usr/local/dropbear/on-boot.sh
 cp rules/96-dropbear.rules /etc/udev/rules.d
 chmod 777 /etc/udev/rules.d/96-dropbear.rules
 ```
+
+## Improvement ideas
+
+* Add toolchain for dropbearkey
+* Add a way to trigger dropbear when wifi is enabled or disabled using udev
+* Add continuous integration
 
 ## Credits
 
