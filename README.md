@@ -1,13 +1,13 @@
-# KoboSSH ![Build dropbear](https://github.com/Ewpratten/KoboSSH/workflows/Build%20dropbear/badge.svg)
+# kobopatch-ssh
 
 This repository contains the tools needed to compile [dropbear](https://matt.ucc.asn.au/dropbear/dropbear.html) for the `arm-kobo-linux-gnueabihf` system (all recent [Kobo](https://www.kobo.com/) products). This binary is used for root shell access on Kobo devices which, in my case, is used to deploy and debug software on e-readers.
 
 ## Cloning
 
-This repository uses submodules, and must be cloned with:
+This repository uses submodules, and must be cloned with the following command
 
 ```sh
-git clone --recursive https://github.com/Ewpratten/KoboSSH.git
+git clone --recursive git@github.com:obynio/kobopatch-ssh.git
 ```
 
 ## Compiling locally
@@ -19,35 +19,31 @@ docker pull ewpratten/kolib_toolchain:crosstools
 ./compile.sh
 ```
 
-The resulting ARM binary will be placed at `./dropbearmulti`
+## Kobo setup
 
-## Prebuilt binaries
+> [!IMPORTANT]  
+> This assumes you already have telnet access to the device
 
-I keep some prebuild binaries on the [releases page](https://github.com/Ewpratten/KoboSSH/releases).
-
-## Kobo-side setup
-
-*This assumes you already have telnet access to the device*
-
-Dropbear needs somewhere to go on the system. I chose `/mnt/onboard/opt/dropbear`. With the binary copied over, the following commands will set up ssh keys for the device:
+Dropbear needs somewhere to go on the system. Since the non-static binary is very light I chose `/usr/local/bin`. The host keys must also be generated with dropbearkey that needs to be compiled separately.
 
 ```sh
-cd /mnt/onboard/opt/dropbear
-./dropbearmulti dropbearkey -t dss -f dss_key
-./dropbearmulti dropbearkey -t rsa -f rsa_key
-./dropbearmulti dropbearkey -t ecdsa -f ecdsa_key
+dropbearkey -t dss -f /etc/dropbear/dropbear_dss_host_key
+dropbearkey -t rsa -f /etc/dropbear/dropbear_rsa_host_key
+dropbearkey -t ecdsa -f /etc/dropbear/dropbear_ecdsa_host_key
+dropbearkey -t ed25119 -f /etc/dropbear/dropbear_ed25519_host_key
 ```
 
-The following command can be used to test dropbear:
+To start dropbear on boot you need to add the startup script and the corresponding udev rule.
 
 ```sh
-/mnt/onboard/opt/dropbear/dropbearmulti dropbear -F -E -r /mnt/onboard/opt/dropbear/dss_key -r /mnt/onboard/opt/dropbear/rsa_key -r /mnt/onboard/opt/dropbear/ecdsa_key -B
+mkdir /usr/local/dropbear
+
+cp scripts/boot.sh /usr/local/dropbear
+chmod +x /usr/local/dropbear/boot.sh
+
+cp script/on-boot.sh /usr/local/dropbear
+chmod +x /usr/local/dropbear/on-boot.sh
+
+cp rules/96-dropbear.rules /etc/udev/rules.d
+chmod 777 /etc/udev/rules.d/96-dropbear.rules
 ```
-
-To make dropbear start on boot, add the following line to `/opt/inetd.conf`:
-
-```text
-22 stream tcp nowait root /mnt/onboard/opt/dropbear/dropbearmulti dropbear -i -r /mnt/onboard/opt/dropbear/dss_key -r /mnt/onboard/opt/dropbear/rsa_key -r /mnt/onboard/opt/dropbear/ecdsa_key -B
-```
-
-Rebooting should start up an SSH server on the device.
