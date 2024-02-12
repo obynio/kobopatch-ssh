@@ -53,6 +53,7 @@ chmod 777 /etc/udev/rules.d/96-dropbear.rules
 * Add toolchain for dropbearkey
 * Add a way to trigger dropbear when wifi is enabled or disabled using udev
 * Add continuous integration
+* Look into @pgaskin [kobo's toolchain](https://github.com/pgaskin/NickelTC)
 
 ## Credits
 
