@@ -54,6 +54,7 @@ chmod 777 /etc/udev/rules.d/96-dropbear.rules
 * Add a way to trigger dropbear when wifi is enabled or disabled using udev
 * Add continuous integration
 * Look into @pgaskin [kobo's toolchain](https://github.com/pgaskin/NickelTC)
+* Look into [koxtoolchain](https://github.com/koreader/koxtoolchain) which is better suited than the toolchain above
 
 ## Credits
 
