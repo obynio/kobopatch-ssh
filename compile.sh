@@ -12,4 +12,4 @@ docker run -v $(pwd):/work obynio/kobo-toolchain:crosstools /bin/bash -c 'export
 
 echo "Compiling dropbear"
 docker run -v $(pwd):/work obynio/kobo-toolchain:crosstools /bin/bash -c 'export PATH="/root/x-tools/arm-kobo-linux-gnueabihf/bin:$PATH"; cd /work; make clean'
-docker run -v $(pwd):/work obynio/kobo-toolchain:crosstools /bin/bash -c 'export PATH="/root/x-tools/arm-kobo-linux-gnueabihf/bin:$PATH"; cd /work; make PROGRAMS="dropbear"'
+docker run -v $(pwd):/work obynio/kobo-toolchain:crosstools /bin/bash -c 'export PATH="/root/x-tools/arm-kobo-linux-gnueabihf/bin:$PATH"; cd /work; make PROGRAMS="dropbear dropbearkey"'
